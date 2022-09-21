@@ -1,12 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CarsService } from './cars.service';
+import { CreateCarDto } from './dto/create-car.dto';
 
 @Controller('cars')
+@UsePipes( ValidationPipe )
 export class CarsController {
-   
     constructor(private readonly carsService: CarsService){}
     
-    @Get('list')   //endpoint //endpoint http://localhost:3000/list
+    @Get()   //endpoint //endpoint http://localhost:3000/list
     getAllCars(){  // accion
         console.log('listar');
         return this.carsService.findAll();
@@ -14,28 +15,27 @@ export class CarsController {
 
     @Get(':id')  //endpoint http://localhost:3000/cars/3
     //@Get(':id/:name/:edad') varios parámetros en la url
-    getCarById( @Param('id', ParseIntPipe) id: number ) {  //accion
-        
+    getCarById( @Param('id', ParseUUIDPipe) id: string ) {  //accion
         return this.carsService.findOneById(id); //Number(id)
         console.log (id);
     }
 
     @Post('new')
-    //asociamos la variable data al @Body de la Request y de tipo any
-    create( @Body() data: any ){ 
+    // @UsePipes( ValidationPipe )
+    create( @Body() dataCreateDTO: CreateCarDto ){ 
         return {
             status: 200,
             ok: true,
-            datos: data,
+            datos: dataCreateDTO,
             msg: 'Car insertado'
         }
     }
     
     @Patch(':id')
-    update (@Param('id', ParseIntPipe) id: number,  
-            @Body() data: any){
+    update (@Param('id', ParseUUIDPipe) id: string,  
+            @Body() dataDTO: CreateCarDto){
         let car = this.carsService.findOneById(id); 
-        car.model = data.model;
+        car.model = dataDTO.model;
         return {
             status: 200,
             ok: true,
@@ -45,7 +45,7 @@ export class CarsController {
     }
 
     @Delete(':id')
-    delete (@Param('id', ParseIntPipe) id: number){
+    delete (@Param('id', ParseUUIDPipe) id: number){
        //... Mandar el id al servicio para que se comunique con el SGBD
        // y elimine el objeto de la BD, validando su existencia, reglas de negocio etc
        return {
