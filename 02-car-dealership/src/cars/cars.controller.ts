@@ -23,12 +23,14 @@ export class CarsController {
     @Post('new')
     // @UsePipes( ValidationPipe )
     create( @Body() dataCreateDTO: CreateCarDto ){ 
-        return {
-            status: 200,
-            ok: true,
-            datos: dataCreateDTO,
-            msg: 'Car insertado'
-        }
+        // dataCreateDTO.brand = 'volvo';
+        return this.carsService.create(dataCreateDTO);
+        // return {
+        //     status: 200,
+        //     ok: true,
+        //     datos: dataCreateDTO,
+        //     msg: 'Car insertado'
+        // }
     }
     
     @Patch(':id')
