@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CarsService } from './cars.service';
-import { CreateCarDto } from './dto/create-car.dto';
+import { CreateCarDto, UpdateCarDto } from './dto/indexCar.dto';
 
 @Controller('cars')
 // @UsePipes( ValidationPipe )
@@ -25,25 +25,12 @@ export class CarsController {
     create( @Body() dataCreateDTO: CreateCarDto ){ 
         // dataCreateDTO.brand = 'volvo';
         return this.carsService.create(dataCreateDTO);
-        // return {
-        //     status: 200,
-        //     ok: true,
-        //     datos: dataCreateDTO,
-        //     msg: 'Car insertado'
-        // }
     }
     
     @Patch(':id')
     update (@Param('id', ParseUUIDPipe) id: string,  
-            @Body() dataDTO: CreateCarDto){
-        let car = this.carsService.findOneById(id); 
-        car.model = dataDTO.model;
-        return {
-            status: 200,
-            ok: true,
-            datos: car,
-            msg: `Car ${id} actualizado`
-        }
+            @Body() dataDTO: UpdateCarDto){
+        return this.carsService.update(id, dataDTO);
     }
 
     @Delete(':id')
