@@ -70,4 +70,16 @@ export class CarsService {
         //devolvamos el carDB actualizador
         return carDB;
     }
+
+    delete (id: string){
+        const carDB = this.findOneById(id);    
+        //con filter recorremos el array y devolvemos todos los coches
+        //con id <> al que deseo eliminar
+        this.cars = this.cars.filter(car => car.id != id); 
+        // this.cars = this.cars.filter(car => {
+        //     if (car.id != id)
+        //         return car
+        // } 
+        
+    }
 }

@@ -34,14 +34,8 @@ export class CarsController {
     }
 
     @Delete(':id')
-    delete (@Param('id', ParseUUIDPipe) id: number){
-       //... Mandar el id al servicio para que se comunique con el SGBD
-       // y elimine el objeto de la BD, validando su existencia, reglas de negocio etc
-       return {
-        status: 200,
-        ok: true,
-        msg: `Car ${id} Eliminado`
-    } 
+    delete (@Param('id', ParseUUIDPipe) id: string){
+       return this.carsService.delete(id);
     }
 }
 
