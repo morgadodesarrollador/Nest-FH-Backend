@@ -78,7 +78,7 @@ export class CarsService {
         this.cars = this.cars.filter(car => car.id != id); 
         // this.cars = this.cars.filter(car => {
         //     if (car.id != id)
-        //         return car
+        //         return carvzxcvxzcvzx
         // } 
         
     }
