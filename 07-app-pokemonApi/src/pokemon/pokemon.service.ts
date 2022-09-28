@@ -37,12 +37,10 @@ export class PokemonService {
     if ( !pokemon && isValidObjectId(term)) { //si el termino es un mongoid
       pokemon = await this.pokemonModel.findById(term);
     }
-
     //verificación por name
     if (!pokemon){
       pokemon = await this.pokemonModel.findOne({ name: term.toLowerCase() })
     }
-      
     if (!pokemon){
       throw new NotFoundException( `Pokemon con name or no "${ term }" not found`)
     }
@@ -62,11 +60,12 @@ export class PokemonService {
     }catch (error){
       this.handleException( error );
     }
-    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(id: string) {
+    const pokemon = await this.findOne( id );
+    // this.pokemonModel.findByIdAndDelete( id );
+    await pokemon.deleteOne();
   }
 
   private handleException( error: any ){
