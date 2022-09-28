@@ -34,11 +34,11 @@ export class PokemonService {
   async findOne(term: string) { //termino de busqueda
     let pokemon: Pokemon;
     //verificación por no 
-    if ( !isNaN(+term)){
+    if ( !isNaN(+term)){ //si es un numero (no)
       pokemon = await this.pokemonModel.findOne({ no: term });
     }
     //verificación por mongoid
-    if ( isValidObjectId(term)) { //si el termino es un mongoid
+    if ( !pokemon && isValidObjectId(term)) { //si el termino es un mongoid
       pokemon = await this.pokemonModel.findById(term);
     }
 
@@ -53,8 +53,15 @@ export class PokemonService {
     return pokemon;
   }
 
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
+  async update(term: string, updatePokemonDto: UpdatePokemonDto) {
+    //buscamos el pokemon por un termino
+    const pokemon = await this.findOne (term);
+    if (updatePokemonDto.name){
+      updatePokemonDto.name = updatePokemonDto.name.toLowerCase();
+    }
+    //nos devuelve el pokemon como MODELO. Le pasamos el dto que viene por url
+    await pokemon.updateOne( updatePokemonDto); 
+    return { ...pokemon.toJSON(), ...updatePokemonDto };
   }
 
   remove(id: number) {
