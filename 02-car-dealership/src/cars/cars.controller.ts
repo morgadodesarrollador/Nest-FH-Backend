@@ -10,17 +10,19 @@ export class CarsController {
     @Get()   //endpoint //endpoint http://localhost:3000/list
     getAllCars(){  // accion
         console.log('listar');
-        return this.carsService.findAll();
+        return 'Listado de Cars';
+        //return this.carsService.findAll();
     }
 
     @Get(':id')  //endpoint http://localhost:3000/cars/3
     //@Get(':id/:name/:edad') varios parámetros en la url
     getCarById( @Param('id', ParseUUIDPipe) id: string ) {  //accion
-        return this.carsService.findOneById(id); //Number(id)
-        console.log (id);
+        return `Detalle del Car `
+        // return this.carsService.findOneById(id); //Number(id)
+        // console.log (id);
     }
 
-    @Post('new')
+    @Post()
     // @UsePipes( ValidationPipe )
     create( @Body() dataCreateDTO: CreateCarDto ){ 
         // dataCreateDTO.brand = 'volvo';
@@ -38,4 +40,5 @@ export class CarsController {
        return this.carsService.delete(id);
     }
 }
+
 
