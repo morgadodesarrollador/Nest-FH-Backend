@@ -10,15 +10,13 @@ export class CarsController {
     @Get()   //endpoint //endpoint http://localhost:3000/list
     getAllCars(){  // accion
         console.log('listar');
-        return 'Listado de Cars';
-        //return this.carsService.findAll();
+        return this.carsService.findAll()
     }
 
     @Get(':id')  //endpoint http://localhost:3000/cars/3
     //@Get(':id/:name/:edad') varios parámetros en la url
     getCarById( @Param('id', ParseUUIDPipe) id: string ) {  //accion
-        return `Detalle del Car `
-        // return this.carsService.findOneById(id); //Number(id)
+        return this.carsService.findOneById(id); //Number(id)
         // console.log (id);
     }
 
