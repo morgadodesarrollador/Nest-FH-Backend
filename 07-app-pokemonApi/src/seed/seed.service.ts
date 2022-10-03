@@ -14,7 +14,6 @@ export class SeedService {
   constructor(
     @InjectModel( Pokemon.name )
     private readonly pokemonModel: Model<Pokemon>) {
-    
   }
   async executeSeed(){
     const { data } = await this.axios.get<PokeResponse>('https://pokeapi.co/api/v2/pokemon?limit=100');
@@ -26,9 +25,5 @@ export class SeedService {
       const pokemon = await this.pokemonModel.create( { name, no } );
       return  'Seed execute';
     });
-
-  }
-  handleException(error: any) {
-    throw new Error('Method not implemented.');
   }
 }
