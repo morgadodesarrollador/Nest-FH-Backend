@@ -13,6 +13,7 @@ import { Module } from '@nestjs/common';
       schema: PokemonSchema
     }
   ])
- ] 
+ ],
+ exports: [ MongooseModule ] 
 })
 export class PokemonModule {}
