@@ -17,7 +17,10 @@
    ```
   docker-compose up -d
    ```
-
+  5. Reconstruir la BD con la semilla Seed 
+   ```
+  http://localhost:3000/api/v2/seed
+  ```
 ## Stack usados
 * MongoDB
 * Nest JS
