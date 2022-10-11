@@ -11,4 +11,37 @@ export class Product {
     })
     title: string;
 
+    @Column('numeric', {
+        default: 0
+    })
+    price: number;
+
+    @Column({
+        type:'text',
+        nullable: true
+    })
+    description: string;
+
+    @Column('text',{
+        unique:true
+    })
+    slug: string;
+
+    @Column({
+        type: 'int',
+        default: 0
+    })
+    stock: number;
+
+    @Column('text', {
+        array: true
+    })
+    sizes: string[];
+
+    @Column('text')
+    gender: string;
+
+    //tags
+    //imagess
+
 }
