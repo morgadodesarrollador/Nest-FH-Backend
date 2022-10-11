@@ -43,5 +43,6 @@ export class Product {
 
     //tags
     //imagess
+    //mas caompos
 
 }
