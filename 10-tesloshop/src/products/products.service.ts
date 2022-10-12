@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
+import { validate as isUUID }  from 'uuid';
 
 @Injectable()
 export class ProductsService {
@@ -29,7 +30,6 @@ export class ProductsService {
   }
 
   findAll( paginationDto: PaginationDTO ) {
-    
     const { limit , offset } = paginationDto;
     //toma desde limit y salta el offest
     return this.productRepository.find({
@@ -38,10 +38,15 @@ export class ProductsService {
     });
   }
 
-  async findOne(id: string) {
-    const producto = await this.productRepository.findOneBy( { id });
+  async findOne(termino: string) { //termino: uuid/slug/title
+    let producto: Product;
+    if ( isUUID(termino) ){
+      producto = await this.productRepository.findOneBy ({id: termino})
+    }else{
+      producto = await this.productRepository.findOneBy ({slug: termino})
+    }
     if (!producto){
-      throw new NotFoundException(`Producto con id ${id} not found`)
+      throw new NotFoundException(`Producto con ${termino} not found`)
     } 
     return producto
   }
