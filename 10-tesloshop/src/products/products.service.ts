@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDTO } from 'src/common/dtos/pagination.dto';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -27,8 +28,14 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return this.productRepository.find({});
+  findAll( paginationDto: PaginationDTO ) {
+    
+    const { limit , offset } = paginationDto;
+    //toma desde limit y salta el offest
+    return this.productRepository.find({
+      take: limit,
+      skip: offset
+    });
   }
 
   async findOne(id: string) {
