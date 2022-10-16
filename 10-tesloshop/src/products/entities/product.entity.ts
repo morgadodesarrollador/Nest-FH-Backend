@@ -45,9 +45,9 @@ export class Product {
     @OneToMany(
         () => ProductImage, //regresa un PI
         (productImage) => productImage.product,
-        { cascade: true }
+        { cascade: true, eager: true }
     )
-    images?: ProductImage;
+    images?: ProductImage[];
 
     //tags
     //imagess
