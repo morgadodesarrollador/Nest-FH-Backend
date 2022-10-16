@@ -18,11 +18,13 @@
    ```
   docker-compose up -d
    ```
-  6. Opcional: Reconstruir la BD con la semilla Seed 
-   ```
-  http://localhost:3000/api/v2/seed
-  ```
+
   7. Levantar el entorno de desarrollo ``` yarn start:dev```
+
+  8. Reconstruir la BD con la semilla Seed desde Postman
+  ```
+  http://localhost:3000/api/seed
+  ```
 ## Stack usados
 * MongoDB
 * Nest JS
