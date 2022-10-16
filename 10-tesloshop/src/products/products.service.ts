@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDTO } from 'src/common/dtos/pagination.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { validate as isUUID }  from 'uuid';
 import { Product, ProductImage } from './entities';
+import { Console } from 'console';
 
 @Injectable()
 export class ProductsService {
@@ -16,7 +17,9 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
 
     @InjectRepository(ProductImage)
-    private readonly productImageRepository: Repository<ProductImage>
+    private readonly productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource: DataSource
   ){}
 
   async create(createProductDto: CreateProductDto) {
@@ -90,20 +93,44 @@ export class ProductsService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     //preload busca un objeto de la BD, y se fusiona con la destructuración del dto
     //se devuelve un objeto resultante de la combinación de propiedades
-    const producto = await this.productRepository.preload({
-      id: id,
-      ...updateProductDto,
-      images: []
-    });
+    const { images, ...rest } = updateProductDto;
+    const producto = await this.productRepository.preload({ id, ...rest });
+   
     if(!producto) throw new NotFoundException(`Producto con id ${id} not found`);
+
+    //create Query runner
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();          //conexión a la BD
+    await queryRunner.startTransaction(); //inicio de transacción
+
+
     try {
-      await this.productRepository.save(producto);
-      return (producto)
+      //si vienen imagenes de la reques (dto) --> las borro de product_images
+      if (images){
+        await queryRunner.manager.delete(ProductImage, { product: { id: id }});
+        //ponemos las nuevas imagenes que vienen en la request (dto). NO guard
+        producto.images = images.map( 
+          image => this.productImageRepository.create ({ url: image }))
+      }else {
+        //hemos de cargar de product-images las imágenes relacionadas que hubiera
+        // producto.images = await this.productImageRepository.findBy({ product: { id }});
+      }
+      //guardamos la info del producto pero NO SE GUARDA EN LA BD
+      await queryRunner.manager.save(producto);
+      // para hacer el commit, save y delete deben ser OK, pero si falla alguna 
+      // hay que hacer un rollback
+      await queryRunner.commitTransaction(); //SE GUARDA EN LA BD
+      await queryRunner.release();
+
+      // return (producto)
+      return this.findOnePlain(id);
     } catch (error) {
+      //si hay error en delete o save --> rollback
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+
       this.handleDBExceptions(error);
     }
-    
-    
   }
 
   async remove(id: string) {
