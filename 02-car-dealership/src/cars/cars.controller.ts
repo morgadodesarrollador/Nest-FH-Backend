@@ -22,13 +22,10 @@ export class CarsController {
     }
 
     @Post()
-    create( @Body() dataCar: Car ){ 
+    create( @Body() dataCar: CreateCarDto ){ 
+        // dataCreateDTO.brand = 'volvo';
         return this.carsService.create(dataCar);
     }
-    // create( @Body() dataCreateDTO: CreateCarDto ){ 
-    //     // dataCreateDTO.brand = 'volvo';
-    //     return this.carsService.create(dataCreateDTO);
-    // }
     
     @Patch(':id')
     update (@Param('id', ParseUUIDPipe) id: string,  
@@ -36,14 +33,11 @@ export class CarsController {
         return this.carsService.update(id, dataDTO);
     }
 
+  
     @Delete(':id')
-    delete (@Param('id') id: string){
+    delete (@Param('id', ParseUUIDPipe) id: string){
        return this.carsService.delete(id);
     }
-    // @Delete(':id')
-    // delete (@Param('id', ParseUUIDPipe) id: string){
-    //    return this.carsService.delete(id);
-    // }
 }
 
 

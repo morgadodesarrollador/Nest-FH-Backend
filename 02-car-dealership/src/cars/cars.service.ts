@@ -6,29 +6,8 @@ import { find } from 'rxjs';
 @Injectable()
 export class CarsService {
     public edad: number = 10;
+    
     private cars:Car[] = [
-        {
-            id: '10',
-            brand: 'Honda',
-            model: 'Civic'
-        },
-        {
-            id: '2',
-            brand: 'Peugeot',
-            model: '3008'
-        },
-        {
-            id: '13',
-            brand: 'Renault',
-            model: 'Clio'
-        },
-        {
-            id: '4',
-            brand: 'Jeep',
-            model: 'Cheroke'
-        },
-    ];
-    private cars1:Car[] = [
         {
             id: uuid(),
             brand: 'Honda',
@@ -71,25 +50,27 @@ export class CarsService {
         //select * from cars
         return this.cars;
     }
-    create (dataCar: Car){
-        const ultimo = this.cars[this.cars.length - 1];
-        console.log (ultimo);
-        const newId = +ultimo.id + 1;
-        dataCar.id = newId.toString();
-        this.cars.push(dataCar);
-        return `insertado el ${dataCar.brand} modelo ${dataCar.model}`;
-    }
-
-    // create1 ( carDTO: CreateCarDto){
-    //     const car : ICar[] = {
-    //         id: uuid(),
-    //         ...carDTO
-    //         // brand: carDTO.brand,
-    //         // model: carDTO.model
-    //     }
-    //     this.cars.push(car);
-    //     return car;
+    // create (dataCar: CreateCarDto){
+    //     const ultimo = this.cars[this.cars.length - 1];
+    //     console.log (ultimo);
+    //     const newId = +ultimo.id + 1;
+    //     dataCar.id = newId.toString();
+    //     this.cars.push(dataCar);
+    //     return `insertado el ${dataCar.brand} modelo ${dataCar.model}`;
     // }
+
+    create ( carDTO: CreateCarDto){
+        carDTO.brand = carDTO.brand.toUpperCase();
+        // carDTO.model = carDTO.model.toUpperCase();
+        const ultimo = this.cars[this.cars.length - 1];
+        const newId = +ultimo.id + 1;
+        const car : Car = {
+            id: uuid(),
+            ...carDTO
+        }
+        this.cars.push(car);
+        return car;
+    }
 
     update (id: string, CarDTO: UpdateCarDto){
         let carDB = this.findOneById(id);    
